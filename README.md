@@ -1,5 +1,5 @@
-# TuneBox
-A vibrant and modern audio player web application designed to deliver a seamless and enjoyable music experience. TuneBox allows users to upload their favorite MP3 files, create playlists, and control playback with ease. The app features a sleek and animated UI that is sure to attract younger users and create a storm.
+# A Simple Audio Player
+A vibrant and modern audio player web application designed to deliver a seamless and enjoyable music experience. This Player allows users to upload their favorite MP3 files, create playlists, and control playback with ease. The app features a sleek and animated UI that is sure to attract younger users and create a storm.
 
 ## Features
 - **MP3 File Upload**: Easily upload multiple MP3 files to create your own playlists.
