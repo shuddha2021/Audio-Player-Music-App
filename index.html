@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Simple Audio Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #ff5f6d, #ffc371);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .player {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            text-align: center;
+            width: 400px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .player input[type="file"] {
+            display: none;
+        }
+        .player label {
+            background: #e74c3c;
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 10px 25px;
+            margin-top: 15px;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .player label:hover {
+            background: #ff6b6b;
+        }
+        .player button {
+            background: #e74c3c;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            padding: 10px 25px;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .player button:hover {
+            background: #ff6b6b;
+            transform: scale(1.1);
+        }
+        .player audio {
+            width: 100%;
+            margin-top: 10px;
+            outline: none;
+        }
+        .player input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .player .song-title {
+            margin: 15px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .player .progress-bar {
+            width: 100%;
+            background: #555;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            height: 10px;
+            margin-top: 15px;
+        }
+        .player .progress-bar div {
+            height: 100%;
+            background: linear-gradient(to right, #ff5f6d, #ffc371);
+            width: 0;
+            transition: width 0.2s;
+        }
+        .player .playlist {
+            margin-top: 20px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .player .playlist li {
+            background: #444;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .player .playlist li:hover {
+            background: #555;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+<div class="player">
+    <h2>A Simple Audio Player</h2>
+    <input type="file" id="fileInput" accept="audio/*" multiple>
+    <label for="fileInput">Choose MP3 Files</label>
+    <div class="song-title" id="songTitle">No song selected</div>
+    <audio id="audioPlayer" controls>
+        Your browser does not support the audio element.
+    </audio>
+    <div class="progress-bar" id="progressBar">
+        <div></div>
+    </div>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
+    <button onclick="playAudio()">Play</button>
+    <button onclick="pauseAudio()">Pause</button>
+    <ul class="playlist" id="playlist"></ul>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const songTitle = document.getElementById('songTitle');
+    const progressBar = document.getElementById('progressBar');
+    const progressBarInner = progressBar.querySelector('div');
+    const volumeControl = document.getElementById('volumeControl');
+    const playlist = document.getElementById('playlist');
+
+    let songs = [];
+    let currentSongIndex = 0;
+
+    fileInput.addEventListener('change', function() {
+        const files = Array.from(this.files);
+        songs = files.map(file => ({
+            name: file.name,
+            url: URL.createObjectURL(file)
+        }));
+        updatePlaylist();
+        loadSong(currentSongIndex);
+    });
+
+    function updatePlaylist() {
+        playlist.innerHTML = '';
+        songs.forEach((song, index) => {
+            const li = document.createElement('li');
+            li.textContent = song.name;
+            li.addEventListener('click', () => {
+                loadSong(index);
+                playAudio();
+            });
+            playlist.appendChild(li);
+        });
+    }
+
+    function loadSong(index) {
+        const song = songs[index];
+        if (song) {
+            audioPlayer.src = song.url;
+            songTitle.textContent = song.name;
+            currentSongIndex = index;
+            highlightCurrentSong();
+        }
+    }
+
+    function highlightCurrentSong() {
+        const items = playlist.querySelectorAll('li');
+        items.forEach((item, index) => {
+            if (index === currentSongIndex) {
+                item.style.background = '#e74c3c';
+            } else {
+                item.style.background = '#444';
+            }
+        });
+    }
+
+    audioPlayer.addEventListener('timeupdate', function() {
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBarInner.style.width = `${progress}%`;
+    });
+
+    progressBar.addEventListener('click', function(e) {
+        const rect = progressBar.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const width = rect.width;
+        const percentage = offsetX / width;
+        audioPlayer.currentTime = percentage * audioPlayer.duration;
+    });
+
+    volumeControl.addEventListener('input', function() {
+        audioPlayer.volume = this.value;
+    });
+
+    audioPlayer.addEventListener('ended', function() {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        playAudio();
+    });
+
+    function playAudio() {
+        audioPlayer.play();
+    }
+
+    function pauseAudio() {
+        audioPlayer.pause();
+    }
+</script>
+</body>
+</html>
