@@ -26,7 +26,7 @@ To run this project, you need a modern web browser.
    git clone https://github.com/yourusername/tunebox.git
 
 2. Navigate to the project directory:
-   ``` cd tunebox
+   ```cd tunebox
 
 3. Open index.html in your web browser to run the application.
    
