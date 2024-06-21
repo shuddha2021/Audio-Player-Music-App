@@ -15,6 +15,12 @@ A vibrant and modern audio player web application designed to deliver a seamless
 - **CSS**: Styling and animations of the web application.
 - **JavaScript**: Interactivity and logic implementation.
 
+## Screenshot
+
+<img width="1117" alt="Screenshot 2024-06-21 at 2 50 39 PM" src="https://github.com/shuddha2021/Audio-Player-Music-App/assets/81951239/2ba4bcb1-a8f8-4ead-8624-f2408b7df2ae">
+<img width="1117" alt="Screenshot 2024-06-21 at 2 51 19 PM" src="https://github.com/shuddha2021/Audio-Player-Music-App/assets/81951239/233bdf2f-9c22-4455-8c1b-47e9163ad134">
+
+
 ## Getting Started
 
 ### Prerequisites
